@@ -1,73 +1,112 @@
-# React + TypeScript + Vite
+# Hierarchical Combobox (Async + Accessible)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A production-ready **hierarchical multi-select combobox** built with **React + TypeScript**, supporting **async loading**, **large datasets**, **keyboard navigation**, and **full accessibility**.
 
-Currently, two official plugins are available:
+This component was developed as part of a frontend engineering assignment with an emphasis on **UX, performance, accessibility, and testing**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🔗 Live Storybook (Public)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Explore the component and all edge cases here:
 
-## Expanding the ESLint configuration
+👉 https://6983cbbf4bb97f7f3364ab52-gvzkybeefz.chromatic.com
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Available Stories
+- **Default** – Standard tree behavior
+- **Loading (Slow Network)** – Simulated async delay
+- **Error While Loading** – API failure handling
+- **Heavy Dataset** – Virtualized rendering for large trees
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## ✨ Features
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- 🌳 Hierarchical tree structure
+- 🔄 Async loading of child nodes
+- ⚡ Handles large datasets efficiently
+- ⌨️ Full keyboard navigation
+- ♿ Screen-reader friendly (ARIA compliant)
+- 🔍 Search with ancestor context
+- ☑️ Multi-select with indeterminate state
+- 🧪 Integration tested with real browser
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🚀 Getting Started
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Install dependencies
+```bash
+npm install
+Run the app
+npm run dev
+Run Storybook locally
+npm run storybook
+Run integration tests
+npx vitest
+📦 Component API
+<HierarchicalCombobox />
+A reusable component that renders a hierarchical, async, multi-select combobox.
+
+Tree Node Type
+type TreeNode = {
+  id: string
+  label: string
+  hasChildren: boolean
+  children?: TreeNode[]
+}
+Props
+Prop	Type	Description
+query	string	Current search query
+selectedIds	Set<string>	Selected node IDs
+setSelectedIds	(ids: Set<string>) => void	Selection updater
+Async loading is handled internally via a mocked API layer for testing and Storybook scenarios.
+
+⌨️ Keyboard Interaction
+Key	Action
+ArrowDown	Move focus to next node
+ArrowUp	Move focus to previous node
+ArrowRight	Expand node
+ArrowLeft	Collapse node
+Enter	Expand / Collapse
+Space	Toggle selection
+Keyboard focus remains stable even during async loading and virtualization.
+
+♿ Accessibility
+Accessibility was a first-class concern:
+
+role="tree" and role="treeitem"
+
+aria-expanded for expandable nodes
+
+aria-selected for selection state
+
+aria-busy during async loading
+
+role="alert" for error states
+
+Fully operable using keyboard only
+
+Compatible with screen readers
+
+Accessibility behavior can be verified directly in the Storybook environment.
+
+🧪 Testing
+Integration tests cover:
+
+Async loading behavior
+
+Error handling UI
+
+Keyboard navigation
+
+Performance with heavy datasets
+
+Tech Stack
+Vitest
+
+Storybook Test Runner
+
+Playwright (Chromium)
+
+Tests are executed in a real browser environment.
