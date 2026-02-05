@@ -1,112 +1,236 @@
-# Hierarchical Combobox (Async + Accessible)
+# Hierarchical Combobox (Accessible, Async & Virtualized)
 
-A production-ready **hierarchical multi-select combobox** built with **React + TypeScript**, supporting **async loading**, **large datasets**, **keyboard navigation**, and **full accessibility**.
+An **accessible, keyboard-first hierarchical combobox** built with
+**React + TypeScript**, capable of handling **large async datasets**
+with **virtualized rendering**, **multi-select**, and **full screen
+reader parity**.
 
-This component was developed as part of a frontend engineering assignment with an emphasis on **UX, performance, accessibility, and testing**.
+🔗 **Live Storybook (Chromatic)**\
+https://6983cbbf4bb97f7f3364ab52-gvzkybeefz.chromatic.com/?path=/story/components-hierarchicalcombobox--default
 
----
-
-## 🔗 Live Storybook (Public)
-
-Explore the component and all edge cases here:
-
-👉 https://6983cbbf4bb97f7f3364ab52-gvzkybeefz.chromatic.com
-
-### Available Stories
-- **Default** – Standard tree behavior
-- **Loading (Slow Network)** – Simulated async delay
-- **Error While Loading** – API failure handling
-- **Heavy Dataset** – Virtualized rendering for large trees
-
----
+------------------------------------------------------------------------
 
 ## ✨ Features
 
-- 🌳 Hierarchical tree structure
-- 🔄 Async loading of child nodes
-- ⚡ Handles large datasets efficiently
-- ⌨️ Full keyboard navigation
-- ♿ Screen-reader friendly (ARIA compliant)
-- 🔍 Search with ancestor context
-- ☑️ Multi-select with indeterminate state
-- 🧪 Integration tested with real browser
+-   🌳 Hierarchical tree-based selection
+-   ⚡ Async loading of tree nodes
+-   🔍 Search with ancestry context preservation
+-   🧱 Virtualized rendering (no external libraries)
+-   ☑️ Multi-select with indeterminate states
+-   ⌨️ Full keyboard navigation
+-   ♿ WAI-ARIA compliant
+-   🚦 Loading & error handling
+-   🧪 Storybook-based integration tests
+-   📦 Scales to very large datasets
 
----
+------------------------------------------------------------------------
 
-## 🚀 Getting Started
+## 🛠 Tech Stack
 
-### Install dependencies
-```bash
+-   React 18
+-   TypeScript
+-   Vite
+-   Storybook
+-   Vitest
+-   Playwright
+-   Chromatic
+
+------------------------------------------------------------------------
+
+## 📦 Installation
+
+``` bash
+git clone <your-repository-url>
+cd combobox
 npm install
-Run the app
 npm run dev
-Run Storybook locally
+```
+
+To run Storybook:
+
+``` bash
 npm run storybook
-Run integration tests
-npx vitest
-📦 Component API
-<HierarchicalCombobox />
-A reusable component that renders a hierarchical, async, multi-select combobox.
+```
 
-Tree Node Type
-type TreeNode = {
-  id: string
-  label: string
-  hasChildren: boolean
-  children?: TreeNode[]
+------------------------------------------------------------------------
+
+## 🧩 Combobox Component API
+
+### `<HierarchicalCombobox />`
+
+An accessible, async, virtualized hierarchical combobox supporting
+multi-select and keyboard navigation.
+
+------------------------------------------------------------------------
+
+### Basic Usage
+
+``` tsx
+import { HierarchicalCombobox } from "./tree/HierarchicalCombobox"
+
+export default function Example() {
+  return <HierarchicalCombobox />
 }
-Props
-Prop	Type	Description
-query	string	Current search query
-selectedIds	Set<string>	Selected node IDs
-setSelectedIds	(ids: Set<string>) => void	Selection updater
-Async loading is handled internally via a mocked API layer for testing and Storybook scenarios.
+```
 
-⌨️ Keyboard Interaction
-Key	Action
-ArrowDown	Move focus to next node
-ArrowUp	Move focus to previous node
-ArrowRight	Expand node
-ArrowLeft	Collapse node
-Enter	Expand / Collapse
-Space	Toggle selection
-Keyboard focus remains stable even during async loading and virtualization.
+------------------------------------------------------------------------
 
-♿ Accessibility
-Accessibility was a first-class concern:
+### Props
 
-role="tree" and role="treeitem"
+  ---------------------------------------------------------------------------------
+  Prop         Type                           Default    Description
+  ------------ ------------------------------ ---------- --------------------------
+  `value`      `Set<string>`                  internal   Controlled selected node
+                                                         IDs
 
-aria-expanded for expandable nodes
+  `onChange`   `(ids: Set<string>) => void`   internal   Fired when selection
+                                                         changes
 
-aria-selected for selection state
+  `disabled`   `boolean`                      `false`    Disables the entire
+                                                         combobox
+  ---------------------------------------------------------------------------------
 
-aria-busy during async loading
+> The component is **uncontrolled by default** and manages async
+> loading, selection, and focus internally.
 
-role="alert" for error states
+------------------------------------------------------------------------
 
-Fully operable using keyboard only
+## 🔁 Component Behavior
 
-Compatible with screen readers
+### Selection
 
-Accessibility behavior can be verified directly in the Storybook environment.
+-   Multi-select supported
+-   Selecting a parent selects all descendants
+-   Partial selection shows **indeterminate** checkbox
+-   Fully keyboard and mouse accessible
 
-🧪 Testing
-Integration tests cover:
+### Async Loading
 
-Async loading behavior
+-   Children load lazily on expand
+-   Per-node loading indicators
+-   Error states announced via screen readers
+-   Retry supported
 
-Error handling UI
+### Search
 
-Keyboard navigation
+-   Case-insensitive
+-   Automatically expands ancestors
+-   Preserves hierarchy context
+-   Works even if nodes were never expanded
 
-Performance with heavy datasets
+### Virtualization
 
-Tech Stack
-Vitest
+-   Only visible rows are rendered
+-   Stable keyboard focus while scrolling
+-   No virtualization libraries used
 
-Storybook Test Runner
+------------------------------------------------------------------------
 
-Playwright (Chromium)
+## ⌨️ Keyboard Interaction
 
-Tests are executed in a real browser environment.
+  Key           Action
+  ------------- -------------------
+  Arrow Down    Move focus down
+  Arrow Up      Move focus up
+  Arrow Right   Expand node
+  Arrow Left    Collapse node
+  Space         Toggle selection
+  Enter         Expand / collapse
+  Tab           Exit combobox
+
+------------------------------------------------------------------------
+
+## ♿ Accessibility
+
+### Roles
+
+-   `combobox`
+-   `tree`
+-   `treeitem`
+-   `alert`
+
+### ARIA Attributes
+
+-   `aria-expanded`
+-   `aria-selected`
+-   `aria-busy`
+-   `aria-level`
+
+### Accessibility Guarantees
+
+-   Fully operable without mouse
+-   Screen reader parity with visual state
+-   Async loading and errors announced correctly
+-   Stable focus during virtualization
+
+------------------------------------------------------------------------
+
+## 🔌 Async Data Loader
+
+Tree data is loaded via an overridable async API:
+
+``` ts
+loadChildren(parentId: string): Promise<LoadedNode[]>
+```
+
+This allows:
+
+-   Slow network simulation
+-   Error injection
+-   Heavy dataset testing
+-   Storybook edge cases
+
+------------------------------------------------------------------------
+
+## 📘 Storybook Scenarios
+
+  Story                 Description
+  --------------------- ---------------------------
+  Default               Normal async tree
+  Slow Network          Simulated network latency
+  Error While Loading   Async error handling
+  Heavy Dataset         Large virtualized tree
+
+Each story is also executed as an **integration test**.
+
+------------------------------------------------------------------------
+
+## 🧪 Integration Tests
+
+Integration tests are powered by **Storybook + Vitest + Playwright**.
+
+Run tests:
+
+``` bash
+npx vitest --run
+```
+
+✔ Keyboard navigation\
+✔ Async loading\
+✔ Error handling\
+✔ Virtualized focus stability
+
+------------------------------------------------------------------------
+
+## 📋 Assignment Coverage
+
+  Requirement             Status
+  ----------------------- --------
+  Async tree loading      ✅
+  Virtualized rendering   ✅
+  Search with context     ✅
+  Multi-select            ✅
+  Keyboard-first UX       ✅
+  Screen reader parity    ✅
+  Edge case stories       ✅
+  Public Storybook        ✅
+
+------------------------------------------------------------------------
+
+## 🚀 Deployment
+
+Storybook is deployed using **Chromatic**.
+
+``` bash
+npx chromatic --project-token=<token>
+```
